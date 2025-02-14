@@ -12,28 +12,27 @@ public enum APState {
     InGame,
 }
 
-public class ArchipelagoClient : MonoBehaviour {
+public static class ArchipelagoClient {
     public static int[] AP_VERSION = [0, 5, 0];
     public const string GAME_NAME = "Clique";
     private static ManualLogSource _log;
     public static bool isAuthenticated;
     public static ArchipelagoInfo apInfo = new ArchipelagoInfo();
     public static ArchipelagoUI apUI = new ArchipelagoUI();
-    public static ArchipelagoClient AP;
     public static APState state;
     private static GameObject obj;
-    public int slotID;
+    public static int slotID;
     public static ArchipelagoSession session;
     public static SlotData slotData;
     public static bool isInGame = false;
 
-    public static void Setup(ManualLogSource log) {
-        _log = log;
-        obj = new();
-        obj.name = "ArchipelagoClient";
-        DontDestroyOnLoad(obj);
-        AP = obj.AddComponent<ArchipelagoClient>();
-    }
+    // public static void Setup(ManualLogSource log) {
+    //     _log = log;
+    //     obj = new();
+    //     obj.name = "ArchipelagoClient";
+    //     DontDestroyOnLoad(obj);
+    //     AP = obj.AddComponent<ArchipelagoClient>();
+    // }
 
     public static bool Connect() {
         if (isAuthenticated) {

@@ -1,17 +1,20 @@
 using UnityEngine;
 using HarmonyLib;
 using Shared.Title;
-using BepInEx.Logging;
 
 namespace RiftArchipelago.Patches{
-    [HarmonyPatch(typeof(MainMenuManager), "start")]
+    [HarmonyPatch(typeof(MainMenuManager), "Awake")]
     public static class APUIPatch {
-        private static void CreateUI(MainMenuManager _instance) {
+        [HarmonyPostfix]
+        public static void PostFix() {
+            CreateUI();
+        }
+
+        private static void CreateUI() {
             if(ArchipelagoClient.apUI) return;
             
             var guiGameObject = new GameObject("AP");
             ArchipelagoClient.apUI = guiGameObject.AddComponent<ArchipelagoUI>();
-            // if(_instance.GetComponent)
             Object.DontDestroyOnLoad(guiGameObject);
         }
     }
