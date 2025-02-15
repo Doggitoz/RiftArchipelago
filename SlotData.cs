@@ -8,7 +8,7 @@ namespace RiftArchipelago {
         public int diamondGoal {get; private set;}
         public string goalSong {get; private set;}
 
-        public SlotData(Dictionary<string, object> slotData, ManualLogSource log) {
+        public SlotData(Dictionary<string, object> slotData) {
 
         }
     }

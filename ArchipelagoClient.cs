@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
-using BepInEx.Logging;
 using UnityEngine;
 
 namespace RiftArchipelago;
@@ -15,8 +13,7 @@ public enum APState {
 public static class ArchipelagoClient {
     public static int[] AP_VERSION = [0, 5, 0];
     public const string GAME_NAME = "Clique";
-    private static ManualLogSource _log;
-    public static bool isAuthenticated;
+    public static bool isAuthenticated = false;
     public static ArchipelagoInfo apInfo = new ArchipelagoInfo();
     public static ArchipelagoUI apUI = new ArchipelagoUI();
     public static APState state;
@@ -55,16 +52,18 @@ public static class ArchipelagoClient {
             apInfo.password
         );
 
-        _log.LogInfo(loginResult);
-
         if (loginResult is LoginSuccessful loginSuccess) {
             isAuthenticated = true;
             state = APState.InGame;
-            slotData = new SlotData(loginSuccess.SlotData, _log);
+            slotData = new SlotData(loginSuccess.SlotData);
             return true;
         }
 
         return false;
+    }
+
+    public static async void Disconnect() {
+        if(session is { Socket.Connected: true }) await session.Socket.DisconnectAsync(); 
     }
     
 }

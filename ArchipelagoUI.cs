@@ -1,7 +1,4 @@
 using UnityEngine;
-using HarmonyLib;
-using Shared.Title;
-using Shared.TrackSelection;
 
 namespace RiftArchipelago{
     public class ArchipelagoUI : MonoBehaviour {
@@ -32,17 +29,21 @@ namespace RiftArchipelago{
                 info.slot = GUI.TextField(new Rect(150 + 16 + 8, 56, 150, 20), info.slot);
                 info.password = GUI.TextField(new Rect(150 + 16 + 8, 76, 150, 20), info.password);
 
-                if (submit && Event.current.type == EventType.KeyDown)
-                {
+                if (submit && Event.current.type == EventType.KeyDown) {
                     // The text fields have not consumed the event, which means they were not focused.
                     submit = false;
                 }
 
-                if ((GUI.Button(new Rect(16, 96, 100, 20), "Connect") || submit) && info.Valid)
-                {
-                    if(ArchipelagoClient.Connect()) {
+                if ((GUI.Button(new Rect(16, 96, 100, 20), "Connect") || submit) && info.Valid) {
+                    ArchipelagoClient.Connect();
+                    if(ArchipelagoClient.isAuthenticated) {
                         ItemHandler.Setup();
                     }
+                }
+            }
+            else if(ArchipelagoClient.state == APState.Menu && ArchipelagoClient.session != null) {
+                if(GUI.Button(new Rect(16, 36, 100, 20), "Disconnect")) {
+                    ArchipelagoClient.Disconnect();
                 }
             }
         }

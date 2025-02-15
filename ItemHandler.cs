@@ -11,7 +11,7 @@ namespace RiftArchipelago{
 
             foreach(SongDatabaseData song in songDatabaseDatas) {
                 foreach(DifficultyInformation diff in song.DifficultyInformation) {
-                    diff.UnlockCriteria.RequiredNumberOfDiamonds = 99999;
+                    diff.UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
             }
         }
