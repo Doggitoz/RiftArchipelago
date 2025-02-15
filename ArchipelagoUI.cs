@@ -1,6 +1,7 @@
 using UnityEngine;
 using HarmonyLib;
 using Shared.Title;
+using Shared.TrackSelection;
 
 namespace RiftArchipelago{
     public class ArchipelagoUI : MonoBehaviour {
@@ -39,7 +40,9 @@ namespace RiftArchipelago{
 
                 if ((GUI.Button(new Rect(16, 96, 100, 20), "Connect") || submit) && info.Valid)
                 {
-                    ArchipelagoClient.Connect();
+                    if(ArchipelagoClient.Connect()) {
+                        ItemHandler.Setup();
+                    }
                 }
             }
         }
