@@ -1,6 +1,8 @@
 using System;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
+using BepInEx.Logging;
+using Shared.DLC;
 using UnityEngine;
 
 namespace RiftArchipelago;
@@ -12,7 +14,7 @@ public enum APState {
 
 public static class ArchipelagoClient {
     public static int[] AP_VERSION = [0, 5, 0];
-    public const string GAME_NAME = "Clique";
+    public const string GAME_NAME = "Rift of the Necrodancer";
     public static bool isAuthenticated = false;
     public static ArchipelagoInfo apInfo = new ArchipelagoInfo();
     public static ArchipelagoUI apUI = new ArchipelagoUI();
@@ -22,14 +24,7 @@ public static class ArchipelagoClient {
     public static ArchipelagoSession session;
     public static SlotData slotData;
     public static bool isInGame = false;
-
-    // public static void Setup(ManualLogSource log) {
-    //     _log = log;
-    //     obj = new();
-    //     obj.name = "ArchipelagoClient";
-    //     DontDestroyOnLoad(obj);
-    //     AP = obj.AddComponent<ArchipelagoClient>();
-    // }
+    public static ManualLogSource Logger = new ManualLogSource("Rift AP");
 
     public static bool Connect() {
         if (isAuthenticated) {
@@ -54,7 +49,7 @@ public static class ArchipelagoClient {
 
         if (loginResult is LoginSuccessful loginSuccess) {
             isAuthenticated = true;
-            state = APState.InGame;
+            state = APState.Menu;
             slotData = new SlotData(loginSuccess.SlotData);
             return true;
         }
@@ -64,6 +59,8 @@ public static class ArchipelagoClient {
 
     public static async void Disconnect() {
         if(session is { Socket.Connected: true }) await session.Socket.DisconnectAsync(); 
+        isAuthenticated = false;
+        slotData = null;
     }
     
 }
