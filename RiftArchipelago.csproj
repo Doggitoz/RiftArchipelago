@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>RiftArchipelago</AssemblyName>
-    <Product>RiftOfTheNecrodancerArchipelago</Product>
+    <Product>RotNArchipelago</Product>
     <Version>0.0.1</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
@@ -33,6 +33,9 @@
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>.\lib\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>.\lib\Unity.TextMeshPro.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

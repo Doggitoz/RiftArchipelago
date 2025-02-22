@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Concurrent;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.Helpers;
+using Archipelago.MultiClient.Net.Models;
 using BepInEx.Logging;
 using Shared.DLC;
+using Shared.PlayerData.Replay;
 using UnityEngine;
 
 namespace RiftArchipelago;
@@ -13,8 +17,10 @@ public enum APState {
 }
 
 public static class ArchipelagoClient {
-    public static int[] AP_VERSION = [0, 5, 0];
+    public static int[] AP_VERSION = [0, 6, 0];
     public const string GAME_NAME = "Rift of the Necrodancer";
+
+    private static ConcurrentQueue<ItemInfo> _itemQueue = new();
     public static bool isAuthenticated = false;
     public static ArchipelagoInfo apInfo = new ArchipelagoInfo();
     public static ArchipelagoUI apUI = new ArchipelagoUI();
@@ -51,6 +57,9 @@ public static class ArchipelagoClient {
             isAuthenticated = true;
             state = APState.Menu;
             slotData = new SlotData(loginSuccess.SlotData);
+
+            session.Items.ItemReceived += Session_ItemReceived;
+            
             return true;
         }
 
@@ -63,4 +72,12 @@ public static class ArchipelagoClient {
         slotData = null;
     }
     
+    private static void Session_ItemReceived(ReceivedItemsHelper helper) {
+        var item = helper.DequeueItem();
+        RiftAP._log.LogInfo($"Session_ItemRecieved: {item.ItemDisplayName} {item.ItemId}");
+
+        if(item.ItemId == 0) {
+            ItemHandler.AddDiamond();
+        }
+    }
 }

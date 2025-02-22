@@ -8,20 +8,24 @@ using BepInEx.Logging;
 namespace RiftArchipelago{
     public static class ItemHandler {
         public static Dictionary<string, SongDatabaseData> songDatabaseDict;
+        public static int diamondCount {get; private set;}
 
         public static void Setup() {
-            SongDatabase songDatabase = SongDatabase.Instance;
-
-            // var type = typeof(SongDatabase);
-            // var field = type.GetField("_songDatabaseDict", BindingFlags.NonPublic | BindingFlags.Instance);
-            // var database = (Dictionary<string, SongDatabaseData>)field.GetValue(songDatabase);
-
+            diamondCount = 0;
 
             foreach(KeyValuePair<string, SongDatabaseData> song in songDatabaseDict) {
                 foreach(DifficultyInformation diff in song.Value.DifficultyInformation) {
                     diff.UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
             }
+        }
+
+        public static void AddDiamond() {
+            diamondCount += 1;
+        }
+
+        public static void UnlockSong() {
+            
         }
     }
 }
