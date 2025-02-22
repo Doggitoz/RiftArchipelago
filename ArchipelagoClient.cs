@@ -25,12 +25,10 @@ public static class ArchipelagoClient {
     public static ArchipelagoInfo apInfo = new ArchipelagoInfo();
     public static ArchipelagoUI apUI = new ArchipelagoUI();
     public static APState state;
-    private static GameObject obj;
     public static int slotID;
     public static ArchipelagoSession session;
     public static SlotData slotData;
     public static bool isInGame = false;
-    public static ManualLogSource Logger = new ManualLogSource("Rift AP");
 
     public static bool Connect() {
         if (isAuthenticated) {
@@ -74,10 +72,14 @@ public static class ArchipelagoClient {
     
     private static void Session_ItemReceived(ReceivedItemsHelper helper) {
         var item = helper.DequeueItem();
-        RiftAP._log.LogInfo($"Session_ItemRecieved: {item.ItemDisplayName} {item.ItemId}");
+        RiftAP._log.LogInfo($"Item Recieved: {item.ItemDisplayName} | ID: {item.ItemId}");
+        RiftAP._log.LogInfo($"item.ItemId >= 50: {item.ItemId >= 50} | item.ItemId <= 84: {item.ItemId <= 84}");
 
         if(item.ItemId == 0) {
             ItemHandler.AddDiamond();
+        }
+        else if(item.ItemId >= 50 && item.ItemId <= 84 ) {
+            ItemHandler.UnlockSong(item.ItemName);
         }
     }
 }

@@ -9,7 +9,6 @@ namespace RiftArchipelago.Patches{
         [HarmonyPostfix]
         public static void PostFix(ref TMP_Text ____totalDiamondsText) {
             ____totalDiamondsText.text = $"x{ItemHandler.diamondCount}";
-            RiftAP._log.LogInfo($"Settings diamond text to {ItemHandler.diamondCount}");
         }
     }
 }
