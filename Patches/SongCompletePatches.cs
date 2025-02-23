@@ -1,9 +1,8 @@
-using UnityEngine;
 using HarmonyLib;
-using Shared.Title;
 using Shared;
 using Shared.RhythmEngine;
-using Shared.TrackSelection;
+using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.Packets;
 
 namespace RiftArchipelago.Patches{
     [HarmonyPatch(typeof(StageFlowUiController), "ShowResults")]
@@ -20,7 +19,12 @@ namespace RiftArchipelago.Patches{
                 RiftAP._log.LogInfo("Song Complete, sending checks!");
                 long locId = -1;
 
-                if(____stageContextInfo.IsCustomTrack) { // Custom Track Handling
+                if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) {
+                    var statusUpdatePacket = new StatusUpdatePacket();
+                    statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
+                    ArchipelagoClient.session.Socket.SendPacket(statusUpdatePacket);
+                }
+                else if(____stageContextInfo.IsCustomTrack) { // Custom Track Handling
                     
                 }
 

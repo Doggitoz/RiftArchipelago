@@ -63,6 +63,10 @@ namespace RiftArchipelago{
         public static void AddDiamond() {
             diamondCount += 1;
             RiftAP._log.LogInfo($"Adding Diamond | New Total: {diamondCount}");
+
+            if(diamondCount >= ArchipelagoClient.slotData.diamondGoal) {
+                UnlockSong(ArchipelagoClient.slotData.goalSong);
+            }
         }
 
         public static void UnlockSong(string songName) {
