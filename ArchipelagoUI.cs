@@ -42,6 +42,8 @@ namespace RiftArchipelago{
                 }
             }
             else if(ArchipelagoClient.state == APState.Menu && ArchipelagoClient.session != null) {
+                GUI.Label(new Rect(16, 56, 150, 20), "Goal Song: " + ArchipelagoClient.slotData.goalSong);
+                
                 if(GUI.Button(new Rect(16, 36, 100, 20), "Disconnect")) {
                     ArchipelagoClient.Disconnect();
                 }

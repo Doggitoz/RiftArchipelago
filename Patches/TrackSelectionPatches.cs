@@ -8,7 +8,7 @@ namespace RiftArchipelago.Patches{
     public static class UpdateDiamondText {
         [HarmonyPostfix]
         public static void PostFix(ref TMP_Text ____totalDiamondsText) {
-            ____totalDiamondsText.text = $"x{ItemHandler.diamondCount}";
+            ____totalDiamondsText.text = $"x{ItemHandler.diamondCount} / {ArchipelagoClient.slotData.diamondGoal}";
         }
     }
 }
