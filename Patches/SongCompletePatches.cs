@@ -1,8 +1,11 @@
 using HarmonyLib;
 using Shared;
+using System.Threading.Tasks;
+
 using Shared.RhythmEngine;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Packets;
+using Shared.Leaderboard;
 
 namespace RiftArchipelago.Patches{
     [HarmonyPatch(typeof(StageFlowUiController), "ShowResults")]
@@ -44,4 +47,13 @@ namespace RiftArchipelago.Patches{
             }
         }
     }
+
+    [HarmonyPatch(typeof(LeaderboardDataAccessor), "UploadScoreToLeaderboard")]
+    public static class LeaderboardUploadOverride {
+        private static bool Prefix(out Task<bool> __result) {
+            RiftAP._log.LogInfo($"Uploading Score: {!ArchipelagoClient.isAuthenticated}");
+            __result = Task.FromResult(false);
+            return !ArchipelagoClient.isAuthenticated;
+        }
+}
 }
