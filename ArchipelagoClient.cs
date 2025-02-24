@@ -74,7 +74,7 @@ public static class ArchipelagoClient {
         var item = helper.DequeueItem();
         RiftAP._log.LogInfo($"Item Recieved: {item.ItemDisplayName} | ID: {item.ItemId}");
 
-        if(item.ItemId == 0) {
+        if(item.ItemId == 1) {
             ItemHandler.AddDiamond();
         }
         else if(item.ItemId >= 50 && item.ItemId <= 84 ) {
