@@ -34,7 +34,7 @@ namespace RiftArchipelago{
             {"Necropolis", "RRNecropolis"},
             {"Baboosh", "RRBaboosh"},
             {"Necro Sonatica", "RRNecroSonatica"},
-            {"She Banned", "RHarmonie"},
+            {"She Banned", "RRHarmonie"},
             {"King's Ruse", "RRDeepBlues"},
             {"What's in the Box", "RRMatron"},
             {"Brave the Harvester", "RRReaper"},
