@@ -9,14 +9,14 @@ namespace RiftArchipelago{
             // https://github.com/Berserker66/ArchipelagoSubnauticaModSrc/blob/master/mod/Archipelago.cs
             if (ArchipelagoClient.session != null) {
                 if (ArchipelagoClient.isAuthenticated) {
-                    GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.GetVersion() + " Status: Connected");
+                    GUI.Label(new Rect(16, 16, 300, 20), "Status: Connected");
                 }
                 else {
-                    GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.GetVersion() + " Status: Authentication failed");
+                    GUI.Label(new Rect(16, 16, 300, 20), "Status: Authentication failed");
                 }
             }
             else {
-                GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.GetVersion() + " Status: Not Connected");
+                GUI.Label(new Rect(16, 16, 300, 20), "Status: Not Connected");
             }
 
             if ((ArchipelagoClient.session == null || !ArchipelagoClient.isAuthenticated) && ArchipelagoClient.state == APState.Menu ) {
@@ -44,9 +44,10 @@ namespace RiftArchipelago{
                 }
             }
             else if(ArchipelagoClient.state == APState.Menu && ArchipelagoClient.session != null) {
-                GUI.Label(new Rect(16, 56, 150, 20), "Goal Song: " + ArchipelagoClient.slotData.goalSong);
+                GUI.Label(new Rect(16, 36, 150, 20), "Goal Song: " + ArchipelagoClient.slotData.goalSong);
+                // GUI.Toggle(new Rect(16, 56, 100, 20), ArchipelagoClient.slotData.deathLink, "Death Link Toggle");
 
-                if(GUI.Button(new Rect(16, 36, 100, 20), "Disconnect")) {
+                if(GUI.Button(new Rect(16, 76, 100, 20), "Disconnect")) {
                     ArchipelagoClient.Disconnect();
                 }
             }

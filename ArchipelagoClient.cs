@@ -26,10 +26,6 @@ public static class ArchipelagoClient {
     public static SlotData slotData;
     public static bool isInGame = false;
 
-    public static string GetVersion() {
-        return $"[{AP_VERSION[0]}, {AP_VERSION[1]}, {AP_VERSION[2]}]";
-    }
-
     public static bool Connect() {
         if (isAuthenticated) {
             return true;
