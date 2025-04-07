@@ -6,6 +6,7 @@ using Shared.RhythmEngine;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Packets;
 using Shared.Leaderboard;
+using Shared.TrackSelection;
 
 namespace RiftArchipelago.Patches{
     [HarmonyPatch(typeof(StageFlowUiController), "ShowResults")]
@@ -22,20 +23,21 @@ namespace RiftArchipelago.Patches{
                 RiftAP._log.LogInfo("Song Complete, sending checks!");
                 long locId = -1;
 
-                if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) {
+                if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) { // Goal
                     var statusUpdatePacket = new StatusUpdatePacket();
                     statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
                     ArchipelagoClient.session.Socket.SendPacket(statusUpdatePacket);
                 }
+
                 else if(____stageContextInfo.IsCustomTrack) { // Custom Track Handling
                     
                 }
 
                 else if(____stageContextInfo.LetterGradeDefinitions.IsBossBattle) { // Boss Battle Handling
-
+                    
                 }
 
-                else {
+                else { // Vanilla song
                     locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
                 }
 

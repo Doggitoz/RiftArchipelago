@@ -4,10 +4,6 @@ using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
-using BepInEx.Logging;
-using Shared.DLC;
-using Shared.PlayerData.Replay;
-using UnityEngine;
 
 namespace RiftArchipelago;
 
