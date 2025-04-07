@@ -13,7 +13,7 @@ public enum APState {
 }
 
 public static class ArchipelagoClient {
-    public static int[] AP_VERSION = {0, 6, 0};
+    public static int[] AP_VERSION = {0, 6, 1};
     public const string GAME_NAME = "Rift of the Necrodancer";
 
     private static ConcurrentQueue<ItemInfo> _itemQueue = new();
@@ -25,6 +25,10 @@ public static class ArchipelagoClient {
     public static ArchipelagoSession session;
     public static SlotData slotData;
     public static bool isInGame = false;
+
+    public static string GetVersion() {
+        return $"[{AP_VERSION[0]}, {AP_VERSION[1]}, {AP_VERSION[2]}]";
+    }
 
     public static bool Connect() {
         if (isAuthenticated) {

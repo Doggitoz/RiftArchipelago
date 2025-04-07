@@ -9,14 +9,14 @@ namespace RiftArchipelago{
             // https://github.com/Berserker66/ArchipelagoSubnauticaModSrc/blob/master/mod/Archipelago.cs
             if (ArchipelagoClient.session != null) {
                 if (ArchipelagoClient.isAuthenticated) {
-                    GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.AP_VERSION.ToString() + " Status: Connected");
+                    GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.GetVersion() + " Status: Connected");
                 }
                 else {
-                    GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.AP_VERSION.ToString() + " Status: Authentication failed");
+                    GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.GetVersion() + " Status: Authentication failed");
                 }
             }
             else {
-                GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.AP_VERSION.ToString() + " Status: Not Connected");
+                GUI.Label(new Rect(16, 16, 300, 20), ArchipelagoClient.GetVersion() + " Status: Not Connected");
             }
 
             if ((ArchipelagoClient.session == null || !ArchipelagoClient.isAuthenticated) && ArchipelagoClient.state == APState.Menu ) {
