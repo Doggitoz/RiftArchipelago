@@ -13,7 +13,7 @@ public enum APState {
 }
 
 public static class ArchipelagoClient {
-    public static int[] AP_VERSION = [0, 6, 0];
+    public static int[] AP_VERSION = {0, 6, 0};
     public const string GAME_NAME = "Rift of the Necrodancer";
 
     private static ConcurrentQueue<ItemInfo> _itemQueue = new();
@@ -73,7 +73,7 @@ public static class ArchipelagoClient {
         if(item.ItemId == 1) {
             ItemHandler.AddDiamond();
         }
-        else if(item.ItemId >= 50 && item.ItemId <= 84 ) {
+        else if(item.ItemId >= 50 && item.ItemId <= 89 ) {
             ItemHandler.UnlockSong(item.ItemName);
         }
     }

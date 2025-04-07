@@ -44,6 +44,11 @@ namespace RiftArchipelago{
             {"Slugger's Refrain", "DLCApricot01"},
             {"Got Danged", "DLCApricot02"},
             {"Bootus Bleez", "DLCApricot03"},
+            {"Resurrections (dannyBstyle Remix)", "DLCBanana01"},
+            {"Scattered and Lost", "DLCBanana02"},
+            {"Reach for the Summit", "DLCBanana03"},
+            {"Confronting Myself", "DLCBanana04"},
+            {"Resurrections", "DLCBanana05"},
         };
 
         public static Dictionary<string, SongDatabaseData> songDatabaseDict;
