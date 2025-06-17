@@ -73,7 +73,7 @@ public static class ArchipelagoClient {
         if(item.ItemId == 1) {
             ItemHandler.AddDiamond();
         }
-        else if(item.ItemId >= 50 && item.ItemId <= 89 ) {
+        else if(item.ItemId >= 50) {
             ItemHandler.UnlockSong(item.ItemName);
         }
     }

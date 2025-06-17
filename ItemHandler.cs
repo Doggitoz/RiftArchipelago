@@ -51,19 +51,19 @@ namespace RiftArchipelago{
             {"Reach for the Summit", "DLCBanana03"},
             {"Confronting Myself", "DLCBanana04"},
             {"Resurrections", "DLCBanana05"},
-            {"It's Pizza Time!", "DLCCherry01"},
-            {"The Death That I Deservioli", "DLCCherry02"},
-            {"Unexpectancy, Pt. 3", "DLCCherry03"},
-            {"World Wide Noise", "DLCCherry04"},
-            {"Too Real", "DLCKiwi01"},
-            {"M@GICAL☆CURE! LOVE ♥ SHOT!", "DLCKiwi02"},
-            {"Intergalactic Bound", "DLCKiwi03"},
-            {"Just 1dB Louder", "DLCKiwi04"},
-            {"MikuFiesta", "DLCKiwi05"},
-            {"Radiant Revival", "DLCKiwi06"},
-            {"Crypteque", "DLCOG02"},
-            {"Power Cords", "DLCOG06"},
-            {"Fungal Funk", "DLCOG07"},
+            // {"It's Pizza Time!", "DLCCherry01"},
+            // {"The Death That I Deservioli", "DLCCherry02"},
+            // {"Unexpectancy, Pt. 3", "DLCCherry03"},
+            // {"World Wide Noise", "DLCCherry04"},
+            // {"Too Real", "DLCKiwi01"},
+            // {"M@GICAL☆CURE! LOVE ♥ SHOT!", "DLCKiwi02"},
+            // {"Intergalactic Bound", "DLCKiwi03"},
+            // {"Just 1dB Louder", "DLCKiwi04"},
+            // {"MikuFiesta", "DLCKiwi05"},
+            // {"Radiant Revival", "DLCKiwi06"},
+            // {"Crypteque", "DLCOG02"},
+            // {"Power Cords", "DLCOG06"},
+            // {"Fungal Funk", "DLCOG07"},
         };
 
         public static Dictionary<string, SongDatabaseData> songDatabaseDict;
@@ -74,7 +74,7 @@ namespace RiftArchipelago{
 
         public static void Setup() {
             diamondCount = 0;
-            RiftAP._log.LogInfo($"Setting up song Dict");
+            RiftAP._log.LogInfo($"IH Setup: Setting up song Dict");
 
             foreach(SongDatabaseData song in songDatabaseDict.Values) {
                 foreach(DifficultyInformation diff in song.DifficultyInformation) {
@@ -86,7 +86,7 @@ namespace RiftArchipelago{
 
         public static void AddDiamond() {
             diamondCount += 1;
-            RiftAP._log.LogInfo($"Adding Diamond | New Total: {diamondCount}");
+            RiftAP._log.LogInfo($"AddDiamond: Adding Diamond | New Total: {diamondCount}");
 
             if(diamondCount >= ArchipelagoClient.slotData.diamondGoal) {
                 UnlockSong(ArchipelagoClient.slotData.goalSong);
@@ -94,24 +94,20 @@ namespace RiftArchipelago{
         }
 
         public static void UnlockSong(string songName) {
-            songMapping.TryGetValue(songName, out var levelName);
-
-            if(songDatabaseDict.TryGetValue(levelName, out var value)) {
-                RiftAP._log.LogInfo($"Unlocking \"{songName}\"");
-        
-                foreach(DifficultyInformation diff in value.DifficultyInformation) {
-                    diff.UnlockCriteria.Type = UnlockCriteriaType.None;
-                    diff.RemixUnlockCriteria.Type = UnlockCriteriaType.None;
+            if(songMapping.TryGetValue(songName, out var levelName)) {
+                if(songDatabaseDict.TryGetValue(levelName, out var value)) {
+                    RiftAP._log.LogInfo($"UnlockSong: Unlocking \"{songName}\"");
+            
+                    foreach(DifficultyInformation diff in value.DifficultyInformation) {
+                        diff.UnlockCriteria.Type = UnlockCriteriaType.None;
+                        diff.RemixUnlockCriteria.Type = UnlockCriteriaType.None;
+                    }
                 }
             }
-
-            else if(songMapping.TryGetValue(levelName, out var value2)) {
-                RiftAP._log.LogInfo($"Unlocking \"{songName}\" (Post PT DLC Song)");
-                dlcSongUnlocked.Add(value2);
-            }
-
+            
             else {
-                RiftAP._log.LogInfo($"Song \"{songName}\" could not be found");
+                RiftAP._log.LogInfo($"UnlockSong: Unlocking \"{songName}\" (Post Anniversary DLC Song)");
+                dlcSongUnlocked.Add(songName);
             }
         }
     }
