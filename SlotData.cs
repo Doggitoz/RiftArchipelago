@@ -16,6 +16,7 @@ namespace RiftArchipelago {
             }
 
             goalSong = (string) slotData["victoryLocation"];
+            deathLink = false;
         }
 
         private int ParseInt(object i) {

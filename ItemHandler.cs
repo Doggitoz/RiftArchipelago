@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Collections.Generic;
 using BepInEx.Logging;
 using HarmonyLib;
+using Shared.TrackData;
+using Shared;
 
 namespace RiftArchipelago{
     public static class ItemHandler {
@@ -49,18 +51,38 @@ namespace RiftArchipelago{
             {"Reach for the Summit", "DLCBanana03"},
             {"Confronting Myself", "DLCBanana04"},
             {"Resurrections", "DLCBanana05"},
+            {"It's Pizza Time!", "DLCCherry01"},
+            {"The Death That I Deservioli", "DLCCherry02"},
+            {"Unexpectancy, Pt. 3", "DLCCherry03"},
+            {"World Wide Noise", "DLCCherry04"},
+            {"Pizza Tower", "DLCCherryPromo"},
+            {"Too Real", "DLCKiwi01"},
+            {"M@GICAL☆CURE! LOVE ♥ SHOT!", "DLCKiwi02"},
+            {"Intergalactic Bound", "DLCKiwi03"},
+            {"Just 1dB Louder", "DLCKiwi04"},
+            {"MikuFiesta", "DLCKiwi05"},
+            {"Radiant Revival", "DLCKiwi06"},
+            {"Hatsune Miku", "DLCKiwiPromo"},
+            {"Too Real", "DLCKiwiPromo01"},
+            {"Crypteque", "DLCOG02"},
+            {"Power Cords", "DLCOG06"},
+            {"Fungal Funk", "DLCOG07"},
         };
 
         public static Dictionary<string, SongDatabaseData> songDatabaseDict;
+        public static List<string> dlcSongUnlocked = [];
+        public static bool databaseInit = false;
+        public static bool dlcDatabaseInit = false;
         public static int diamondCount {get; private set;}
 
         public static void Setup() {
             diamondCount = 0;
             RiftAP._log.LogInfo($"Setting up song Dict");
 
-            foreach(KeyValuePair<string, SongDatabaseData> song in songDatabaseDict) {
-                foreach(DifficultyInformation diff in song.Value.DifficultyInformation) {
+            foreach(SongDatabaseData song in songDatabaseDict.Values) {
+                foreach(DifficultyInformation diff in song.DifficultyInformation) {
                     diff.UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
+                    diff.RemixUnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
             }
         }
@@ -82,8 +104,15 @@ namespace RiftArchipelago{
         
                 foreach(DifficultyInformation diff in value.DifficultyInformation) {
                     diff.UnlockCriteria.Type = UnlockCriteriaType.None;
+                    diff.RemixUnlockCriteria.Type = UnlockCriteriaType.None;
                 }
             }
+
+            else if(songMapping.TryGetValue(levelName, out var value2)) {
+                RiftAP._log.LogInfo($"Unlocking \"{songName}\" (Post PT DLC Song)");
+                dlcSongUnlocked.Add(value2);
+            }
+
             else {
                 RiftAP._log.LogInfo($"Song \"{songName}\" could not be found");
             }
