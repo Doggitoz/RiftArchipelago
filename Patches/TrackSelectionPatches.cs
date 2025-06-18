@@ -13,16 +13,4 @@ namespace RiftArchipelago.Patches{
             ____totalDiamondsText.text = $"x{ItemHandler.diamondCount} / {ArchipelagoClient.slotData.diamondGoal}";
         }
     }
-
-    // [HarmonyPatch(typeof(BBSelectionSceneController), "Start")]
-    // public static class UpdateBossUnlocks {
-    //     [HarmonyPostfix]
-    //     public static void PostFix(ref BBTrackMetaData[] ____trackMetaDatas) {
-    //         for(int i = 0; i < ____trackMetaDatas.Length; i++) {
-    //             BBTrackMetaData track = ____trackMetaDatas[i];
-    //             track.IsLocked = true;
-    //             track.UnlockCriteria.Type = UnlockCriteriaType.None;
-    //         }
-    //     }
-    // }
 }

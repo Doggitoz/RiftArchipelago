@@ -22,7 +22,6 @@ namespace RiftArchipelago.Patches{
     public static class GetDLCTracks {
         [HarmonyPrefix]
         public static void Prefix(ref Dictionary<string, ITrackMetadata> ____dynamicMetadataMap) {
-            RiftAP._log.LogDebug("DynTracks: Test");
             foreach(LocalTrackMetadata song in ____dynamicMetadataMap.Values) {
                 foreach(LocalTrackDifficulty diff in song.DifficultyInformation) {
                     diff.UnlockCriteria = new TrackUnlockCriteria();
@@ -32,7 +31,7 @@ namespace RiftArchipelago.Patches{
                     }
 
                     diff.UnlockCriteria.Remix = new UnlockCriteria();
-                    if(!ItemHandler.dlcSongUnlocked.Contains(song.TrackName)) {
+                    if((!ItemHandler.dlcSongUnlocked.Contains(song.TrackName) && ArchipelagoClient.slotData.remix) || !ItemHandler.dlcRemixUnlocked.Contains(song.TrackName)) {
                         diff.UnlockCriteria.Remix.Type = UnlockCriteriaType.AlwaysLocked;
                     }
                 }
@@ -50,6 +49,48 @@ namespace RiftArchipelago.Patches{
             //     }
             //     i++;
             // }
+        }
+    }
+
+    [HarmonyPatch(typeof(MGTrackDatabase), "GetTrackMetaDatas")]
+    public static class MGDatabase {
+        [HarmonyPostfix]
+        public static void PostFix(ref MGTrackMetaData[] __result) {
+            for(int i = 0; i < __result.Length; i++) {
+                MGTrackMetaData song = __result[i];
+
+                if(ItemHandler.extraSongUnlocked.TryGetValue(song.LevelId, out var difficulty)) {
+                    if(song.TrackDifficulty == difficulty) {
+                        continue;
+                    }
+                    __result[i].IsLocked = true;
+                }
+
+                else{
+                    __result[i].IsLocked = true;
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(BBTrackDatabase), "GetTrackMetaDatas")]
+    public static class BBDatabase {
+        [HarmonyPostfix]
+        public static void PostFix(ref BBTrackMetaData[] __result) {
+            for(int i = 0; i < __result.Length; i++) {
+                BBTrackMetaData song = __result[i];
+
+                if(ItemHandler.extraSongUnlocked.TryGetValue(song.LevelId, out var difficulty)) {
+                    if(song.TrackDifficulty == difficulty) {
+                        continue;
+                    }
+                    __result[i].IsLocked = true;
+                }
+
+                else{
+                    __result[i].IsLocked = true;
+                }
+            }
         }
     }
 }

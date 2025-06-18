@@ -51,23 +51,26 @@ namespace RiftArchipelago{
             {"Reach for the Summit", "DLCBanana03"},
             {"Confronting Myself", "DLCBanana04"},
             {"Resurrections", "DLCBanana05"},
-            // {"It's Pizza Time!", "DLCCherry01"},
-            // {"The Death That I Deservioli", "DLCCherry02"},
-            // {"Unexpectancy, Pt. 3", "DLCCherry03"},
-            // {"World Wide Noise", "DLCCherry04"},
-            // {"Too Real", "DLCKiwi01"},
-            // {"M@GICAL☆CURE! LOVE ♥ SHOT!", "DLCKiwi02"},
-            // {"Intergalactic Bound", "DLCKiwi03"},
-            // {"Just 1dB Louder", "DLCKiwi04"},
-            // {"MikuFiesta", "DLCKiwi05"},
-            // {"Radiant Revival", "DLCKiwi06"},
-            // {"Crypteque", "DLCOG02"},
-            // {"Power Cords", "DLCOG06"},
-            // {"Fungal Funk", "DLCOG07"},
+        };
+
+        private static Dictionary<string, string> extraMapping = new Dictionary<string, string>() {
+            {"A bit of a Stretch", "MGYoga"},
+            {"Lunch Rush", "MGBurger"},
+            {"Voguelike", "MGPhoto"},
+            {"Show Time!", "MGShow"},
+            {"Take a Breather", "MGBreathing"},
+
+            {"Harmonie", "BBHarmoniePhase2"},
+            {"Deep Blues", "BBDeepBlues"},
+            {"Matron", "BBMatron"},
+            {"Reaper", "BBReaper"},
+            {"Necrodancer", "BBNecrodancer"},
         };
 
         public static Dictionary<string, SongDatabaseData> songDatabaseDict;
         public static List<string> dlcSongUnlocked = [];
+        public static List<string> dlcRemixUnlocked = [];
+        public static Dictionary<string, Difficulty> extraSongUnlocked = new Dictionary<string, Difficulty>();
         public static bool databaseInit = false;
         public static bool dlcDatabaseInit = false;
         public static int diamondCount {get; private set;}
@@ -100,7 +103,9 @@ namespace RiftArchipelago{
             
                     foreach(DifficultyInformation diff in value.DifficultyInformation) {
                         diff.UnlockCriteria.Type = UnlockCriteriaType.None;
-                        diff.RemixUnlockCriteria.Type = UnlockCriteriaType.None;
+                        if(!ArchipelagoClient.slotData.remix) {
+                            diff.RemixUnlockCriteria.Type = UnlockCriteriaType.None;
+                        }
                     }
                 }
             }
@@ -108,6 +113,44 @@ namespace RiftArchipelago{
             else {
                 RiftAP._log.LogInfo($"UnlockSong: Unlocking \"{songName}\" (Post Anniversary DLC Song)");
                 dlcSongUnlocked.Add(songName);
+            }
+        }
+
+        public static void UnlockRemix(string songName) {
+            if(songMapping.TryGetValue(songName, out var levelName)) {
+                if(songDatabaseDict.TryGetValue(levelName, out var value)) {
+                    RiftAP._log.LogInfo($"UnlockRemix: Unlocking \"{songName} (Remix)\"");
+            
+                    foreach(DifficultyInformation diff in value.DifficultyInformation) {
+                        diff.RemixUnlockCriteria.Type = UnlockCriteriaType.None;
+                    }
+                }
+            }
+            
+            else {
+                RiftAP._log.LogInfo($"UnlockRemix: Unlocking \"{songName} (Remix)\" (Post Anniversary DLC Song)");
+                dlcSongUnlocked.Add(songName);
+            }
+        }
+
+        public static void UnlockExtra(string songName) {
+            if(songName.Contains("(Medium)")) {
+                RiftAP._log.LogInfo($"UnlockExtra: Unlocking \"{songName}\"");
+                extraMapping.TryGetValue(songName.Substring(0, songName.Length - 9), out var value);
+                extraSongUnlocked.Add(value, Difficulty.Medium);
+            }
+
+            else if(songName.Contains("(Hard)")) {
+                RiftAP._log.LogInfo($"UnlockExtra: Unlocking \"{songName}\"");
+                extraMapping.TryGetValue(songName.Substring(0, songName.Length - 7), out var value);
+                extraSongUnlocked.Add(value, Difficulty.Hard);
+            }
+
+            else {
+                RiftAP._log.LogInfo($"UnlockExtra: Unlocking \"{songName}\"");
+                extraMapping.TryGetValue(songName, out var value);
+                extraSongUnlocked.Add(value, Difficulty.Medium);
+                extraSongUnlocked.Add(value, Difficulty.Hard);
             }
         }
     }
