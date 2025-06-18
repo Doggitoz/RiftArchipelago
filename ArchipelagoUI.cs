@@ -3,7 +3,9 @@ using UnityEngine;
 namespace RiftArchipelago{
     public class ArchipelagoUI : MonoBehaviour {
         private void OnGUI() {
-            Cursor.visible = false;
+            if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.LeftAlt) {
+                Cursor.visible = !Cursor.visible;
+            }
 
             // Yoinked directly from Corn Kidz randomizer, which was yoinked directly from Subnautica randomizer
             // https://github.com/Berserker66/ArchipelagoSubnauticaModSrc/blob/master/mod/Archipelago.cs
