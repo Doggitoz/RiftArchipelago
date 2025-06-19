@@ -13,7 +13,7 @@ namespace RiftArchipelago.Patches{
     public static class APLocationSend {
         [HarmonyPostfix]
         public static void PostFix(StageFlowUiController __instance, ref StageFlowUiController.StageContextInfo ____stageContextInfo, StageInputRecord stageInputRecord, 
-                                   float trackProgressPercentage, bool didNotFinish, bool cheatsDetected) {
+                                   float trackProgressPercentage, bool didNotFinish, bool cheatsDetected, bool isRemixMode, string bossName) {
             if (!ArchipelagoClient.isAuthenticated) return;
             if(____stageContextInfo.IsDailyChallenge && ____stageContextInfo.IsChallenge) return;
 
@@ -34,11 +34,21 @@ namespace RiftArchipelago.Patches{
                 }
 
                 else if(____stageContextInfo.LetterGradeDefinitions.IsBossBattle) { // Boss Battle Handling
-                    
+                    RiftAP._log.LogInfo("Boss Battle Cleared");
+                }
+
+                else if(____stageContextInfo.LetterGradeDefinitions.ShouldPromoteToMaxRankOnFullHealth) { // Minigame Handling
+                    RiftAP._log.LogInfo("Minigame Cleared");
                 }
 
                 else { // Vanilla song
-                    locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
+                    RiftAP._log.LogInfo("Remix Mode: " + isRemixMode);
+                    if(!ArchipelagoClient.slotData.remix || !isRemixMode) {
+                        locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
+                    }
+                    else {
+                        locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + " (Remix)-0");
+                    }
                 }
 
                 RiftAP._log.LogInfo($"Sending {____stageContextInfo.StageDisplayName} {locId}");
