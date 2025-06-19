@@ -19,7 +19,7 @@ namespace RiftArchipelago.Patches{
 
             RiftAP._log.LogInfo($"Song Progress: {trackProgressPercentage}");
             
-            if(trackProgressPercentage > 0) {
+            if(trackProgressPercentage > 0 || ____stageContextInfo.LetterGradeDefinitions.IsBossBattle) {
                 RiftAP._log.LogInfo("Song Complete, sending checks!");
                 long locId = -1;
 
@@ -35,10 +35,22 @@ namespace RiftArchipelago.Patches{
 
                 else if(____stageContextInfo.LetterGradeDefinitions.IsBossBattle) { // Boss Battle Handling
                     RiftAP._log.LogInfo("Boss Battle Cleared");
+                    if(ArchipelagoClient.slotData.bbMode == 1) { 
+                        locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
+                    }
+                    else if(ArchipelagoClient.slotData.bbMode == 2) {
+                        locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", $"{____stageContextInfo.StageDisplayName} ({____stageContextInfo.StageDifficulty})-0");
+                    }
                 }
 
                 else if(____stageContextInfo.LetterGradeDefinitions.ShouldPromoteToMaxRankOnFullHealth) { // Minigame Handling
                     RiftAP._log.LogInfo("Minigame Cleared");
+                    if(ArchipelagoClient.slotData.mgMode == 1) { 
+                        locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
+                    }
+                    else if(ArchipelagoClient.slotData.mgMode == 2) {
+                        locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", $"{____stageContextInfo.StageDisplayName} ({____stageContextInfo.StageDifficulty})-0");
+                    }
                 }
 
                 else { // Vanilla song

@@ -54,7 +54,7 @@ namespace RiftArchipelago{
         };
 
         private static Dictionary<string, string> extraMapping = new Dictionary<string, string>() {
-            {"A bit of a Stretch", "MGYoga"},
+            {"A Bit of a Stretch", "MGYoga"},
             {"Lunch Rush", "MGBurger"},
             {"Voguelike", "MGPhoto"},
             {"Show Time!", "MGShow"},
