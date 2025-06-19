@@ -22,6 +22,8 @@ namespace RiftArchipelago.Patches{
     public static class GetDLCTracks {
         [HarmonyPrefix]
         public static void Prefix(ref Dictionary<string, ITrackMetadata> ____dynamicMetadataMap) {
+            if (!ArchipelagoClient.isAuthenticated) return;
+
             foreach(LocalTrackMetadata song in ____dynamicMetadataMap.Values) {
                 foreach(LocalTrackDifficulty diff in song.DifficultyInformation) {
                     diff.UnlockCriteria = new TrackUnlockCriteria();
@@ -56,18 +58,20 @@ namespace RiftArchipelago.Patches{
     public static class MGDatabase {
         [HarmonyPostfix]
         public static void PostFix(ref MGTrackMetaData[] __result) {
+            if (!ArchipelagoClient.isAuthenticated) return;
+
             for(int i = 0; i < __result.Length; i++) {
                 MGTrackMetaData song = __result[i];
+                RiftAP._log.LogInfo($"MG GetTrackMetaDatas: {song.LevelId}");
 
                 if(ItemHandler.extraSongUnlocked.TryGetValue(song.LevelId, out var difficulty)) {
-                    if(song.TrackDifficulty == difficulty) {
-                        continue;
+                    if(song.TrackDifficulty != difficulty) {
+                        __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                     }
-                    __result[i].IsLocked = true;
                 }
 
                 else{
-                    __result[i].IsLocked = true;
+                    __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
             }
         }
@@ -77,18 +81,20 @@ namespace RiftArchipelago.Patches{
     public static class BBDatabase {
         [HarmonyPostfix]
         public static void PostFix(ref BBTrackMetaData[] __result) {
+            if (!ArchipelagoClient.isAuthenticated) return;
+
             for(int i = 0; i < __result.Length; i++) {
                 BBTrackMetaData song = __result[i];
+                RiftAP._log.LogInfo($"BB GetTrackMetaDatas: {song.LevelId}");
 
                 if(ItemHandler.extraSongUnlocked.TryGetValue(song.LevelId, out var difficulty)) {
-                    if(song.TrackDifficulty == difficulty) {
-                        continue;
+                    if(song.TrackDifficulty != difficulty) {
+                        __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                     }
-                    __result[i].IsLocked = true;
                 }
 
                 else{
-                    __result[i].IsLocked = true;
+                    __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
             }
         }
