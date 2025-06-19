@@ -43,7 +43,7 @@ namespace RiftArchipelago.Patches{
                     }
                 }
 
-                else if(____stageContextInfo.LetterGradeDefinitions.ShouldPromoteToMaxRankOnFullHealth) { // Minigame Handling
+                else if(____stageContextInfo.LetterGradeDefinitions.name == "LetterGradeDefinitionsMG") { // Minigame Handling
                     RiftAP._log.LogInfo("Minigame Cleared");
                     if(ArchipelagoClient.slotData.mgMode == 1) { 
                         locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
