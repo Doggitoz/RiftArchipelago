@@ -4,6 +4,7 @@ using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
+using Archipelago.MultiClient.Net.Packets;
 
 namespace RiftArchipelago;
 
@@ -66,6 +67,13 @@ public static class ArchipelagoClient {
         slotData = null;
     }
     
+    public static void GoalGame() {
+        RiftAP._log.LogInfo("Goal Reached!");
+        var statusUpdatePacket = new StatusUpdatePacket();
+        statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
+        session.Socket.SendPacket(statusUpdatePacket);
+    }
+
     private static void Session_ItemReceived(ReceivedItemsHelper helper) {
         var item = helper.DequeueItem();
         RiftAP._log.LogInfo($"Item Recieved: {item.ItemDisplayName} | ID: {item.ItemId}");

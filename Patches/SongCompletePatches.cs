@@ -23,22 +23,30 @@ namespace RiftArchipelago.Patches{
                 RiftAP._log.LogInfo("Song Complete, sending checks!");
                 long locId = -1;
 
-                if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) { // Goal
-                    var statusUpdatePacket = new StatusUpdatePacket();
-                    statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
-                    ArchipelagoClient.session.Socket.SendPacket(statusUpdatePacket);
-                }
+                // if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) { // Goal
+                //     var statusUpdatePacket = new StatusUpdatePacket();
+                //     statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
+                //     ArchipelagoClient.session.Socket.SendPacket(statusUpdatePacket);
+                // }
 
-                else if(____stageContextInfo.IsCustomTrack) { // Custom Track Handling
+                if(____stageContextInfo.IsCustomTrack) { // Custom Track Handling
                     
                 }
 
                 else if(____stageContextInfo.LetterGradeDefinitions.IsBossBattle) { // Boss Battle Handling
                     RiftAP._log.LogInfo("Boss Battle Cleared");
                     if(ArchipelagoClient.slotData.bbMode == 1) { 
+                        if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) {
+                            ArchipelagoClient.GoalGame();
+                        }
+
                         locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
                     }
                     else if(ArchipelagoClient.slotData.bbMode == 2) {
+                        if($"{____stageContextInfo.StageDisplayName} ({____stageContextInfo.StageDifficulty})" == ArchipelagoClient.slotData.goalSong) {
+                            ArchipelagoClient.GoalGame();
+                        }
+
                         locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", $"{____stageContextInfo.StageDisplayName} ({____stageContextInfo.StageDifficulty})-0");
                     }
                 }
@@ -46,9 +54,18 @@ namespace RiftArchipelago.Patches{
                 else if(____stageContextInfo.LetterGradeDefinitions.name == "LetterGradeDefinitionsMG") { // Minigame Handling
                     RiftAP._log.LogInfo("Minigame Cleared");
                     if(ArchipelagoClient.slotData.mgMode == 1) { 
+                        if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) {
+                            ArchipelagoClient.GoalGame();
+                        }
+
                         locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
                     }
                     else if(ArchipelagoClient.slotData.mgMode == 2) {
+                        if($"{____stageContextInfo.StageDisplayName} ({____stageContextInfo.StageDifficulty})" == ArchipelagoClient.slotData.goalSong) {
+                            RiftAP._log.LogInfo("Goaling Reached!");
+                            ArchipelagoClient.GoalGame();
+                        }
+
                         locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", $"{____stageContextInfo.StageDisplayName} ({____stageContextInfo.StageDifficulty})-0");
                     }
                 }
@@ -56,9 +73,17 @@ namespace RiftArchipelago.Patches{
                 else { // Vanilla song
                     RiftAP._log.LogInfo("Remix Mode: " + isRemixMode);
                     if(!ArchipelagoClient.slotData.remix || !isRemixMode) {
+                        if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) {
+                            ArchipelagoClient.GoalGame();
+                        }
+
                         locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + "-0");
                     }
                     else {
+                        if(____stageContextInfo.StageDisplayName + " (Remix)" == ArchipelagoClient.slotData.goalSong) {
+                            ArchipelagoClient.GoalGame();
+                        }
+
                         locId = ArchipelagoClient.session.Locations.GetLocationIdFromName("Rift of the Necrodancer", ____stageContextInfo.StageDisplayName + " (Remix)-0");
                     }
                 }
