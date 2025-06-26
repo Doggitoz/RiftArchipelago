@@ -23,12 +23,6 @@ namespace RiftArchipelago.Patches{
                 RiftAP._log.LogInfo("Song Complete, sending checks!");
                 long locId = -1;
 
-                // if(____stageContextInfo.StageDisplayName == ArchipelagoClient.slotData.goalSong) { // Goal
-                //     var statusUpdatePacket = new StatusUpdatePacket();
-                //     statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
-                //     ArchipelagoClient.session.Socket.SendPacket(statusUpdatePacket);
-                // }
-
                 if(____stageContextInfo.IsCustomTrack) { // Custom Track Handling
                     
                 }
