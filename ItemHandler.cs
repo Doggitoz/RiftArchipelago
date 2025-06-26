@@ -64,7 +64,7 @@ namespace RiftArchipelago{
             {"Deep Blues", "BBDeepBlues"},
             {"Matron", "BBMatron"},
             {"Reaper", "BBReaper"},
-            {"The Necrodancer", "BBNecrodancer"},
+            {"The NecroDancer", "BBNecrodancer"},
         };
 
         public static Dictionary<string, SongDatabaseData> songDatabaseDict;
