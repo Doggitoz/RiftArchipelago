@@ -56,7 +56,6 @@ namespace RiftArchipelago.Patches{
                     }
                     else if(ArchipelagoClient.slotData.mgMode == 2) {
                         if($"{____stageContextInfo.StageDisplayName} ({____stageContextInfo.StageDifficulty})" == ArchipelagoClient.slotData.goalSong) {
-                            RiftAP._log.LogInfo("Goaling Reached!");
                             ArchipelagoClient.GoalGame();
                         }
 
