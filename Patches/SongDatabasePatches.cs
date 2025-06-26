@@ -33,7 +33,8 @@ namespace RiftArchipelago.Patches{
                     }
 
                     diff.UnlockCriteria.Remix = new UnlockCriteria();
-                    if((!ItemHandler.dlcSongUnlocked.Contains(song.TrackName) && ArchipelagoClient.slotData.remix) || !ItemHandler.dlcRemixUnlocked.Contains(song.TrackName)) {
+                    // RiftAP._log.LogInfo($"{song.TrackName}: {!ItemHandler.dlcSongUnlocked.Contains(song.TrackName)}, {!ArchipelagoClient.slotData.remix}, {!ItemHandler.dlcRemixUnlocked.Contains(song.TrackName)}");
+                    if((!ItemHandler.dlcSongUnlocked.Contains(song.TrackName) && !ArchipelagoClient.slotData.remix) || !ItemHandler.dlcRemixUnlocked.Contains(song.TrackName)) {
                         diff.UnlockCriteria.Remix.Type = UnlockCriteriaType.AlwaysLocked;
                     }
                 }
@@ -64,13 +65,11 @@ namespace RiftArchipelago.Patches{
                 MGTrackMetaData song = __result[i];
                 RiftAP._log.LogInfo($"MG GetTrackMetaDatas: {song.LevelId}");
 
-                if(ItemHandler.extraSongUnlocked.TryGetValue(song.LevelId, out var difficulty)) {
-                    if(song.TrackDifficulty != difficulty) {
-                        __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
-                    }
+                if(song.TrackDifficulty == Difficulty.Medium && !ItemHandler.extraMedium.Contains(song.LevelId)) {
+                    __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
 
-                else{
+                else if (song.TrackDifficulty == Difficulty.Hard && !ItemHandler.extraHard.Contains(song.LevelId)){
                     __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
             }
@@ -87,13 +86,11 @@ namespace RiftArchipelago.Patches{
                 BBTrackMetaData song = __result[i];
                 RiftAP._log.LogInfo($"BB GetTrackMetaDatas: {song.LevelId}");
 
-                if(ItemHandler.extraSongUnlocked.TryGetValue(song.LevelId, out var difficulty)) {
-                    if(song.TrackDifficulty != difficulty) {
-                        __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
-                    }
+                if(song.TrackDifficulty == Difficulty.Medium && !ItemHandler.extraMedium.Contains(song.LevelId)) {
+                    __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
 
-                else{
+                else if (song.TrackDifficulty == Difficulty.Hard && !ItemHandler.extraHard.Contains(song.LevelId)){
                     __result[i].UnlockCriteria.Type = UnlockCriteriaType.AlwaysLocked;
                 }
             }

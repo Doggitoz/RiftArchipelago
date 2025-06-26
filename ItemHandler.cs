@@ -64,13 +64,14 @@ namespace RiftArchipelago{
             {"Deep Blues", "BBDeepBlues"},
             {"Matron", "BBMatron"},
             {"Reaper", "BBReaper"},
-            {"Necrodancer", "BBNecrodancer"},
+            {"The Necrodancer", "BBNecrodancer"},
         };
 
         public static Dictionary<string, SongDatabaseData> songDatabaseDict;
         public static List<string> dlcSongUnlocked = [];
         public static List<string> dlcRemixUnlocked = [];
-        public static Dictionary<string, Difficulty> extraSongUnlocked = new Dictionary<string, Difficulty>();
+        public static List<string> extraMedium = [];
+        public static List<string> extraHard = [];
         public static bool databaseInit = false;
         public static bool dlcDatabaseInit = false;
         public static int diamondCount {get; private set;}
@@ -129,7 +130,7 @@ namespace RiftArchipelago{
             
             else {
                 RiftAP._log.LogInfo($"UnlockRemix: Unlocking \"{songName} (Remix)\" (Post Anniversary DLC Song)");
-                dlcSongUnlocked.Add(songName);
+                dlcRemixUnlocked.Add(songName);
             }
         }
 
@@ -137,20 +138,20 @@ namespace RiftArchipelago{
             if(songName.Contains("(Medium)")) {
                 RiftAP._log.LogInfo($"UnlockExtra: Unlocking \"{songName}\"");
                 extraMapping.TryGetValue(songName.Substring(0, songName.Length - 9), out var value);
-                extraSongUnlocked.Add(value, Difficulty.Medium);
+                extraMedium.Add(value);
             }
 
             else if(songName.Contains("(Hard)")) {
                 RiftAP._log.LogInfo($"UnlockExtra: Unlocking \"{songName}\"");
                 extraMapping.TryGetValue(songName.Substring(0, songName.Length - 7), out var value);
-                extraSongUnlocked.Add(value, Difficulty.Hard);
+                extraHard.Add(value);
             }
 
             else {
                 RiftAP._log.LogInfo($"UnlockExtra: Unlocking \"{songName}\"");
                 extraMapping.TryGetValue(songName, out var value);
-                extraSongUnlocked.Add(value, Difficulty.Medium);
-                extraSongUnlocked.Add(value, Difficulty.Hard);
+                extraMedium.Add(value);
+                extraHard.Add(value);
             }
         }
     }
