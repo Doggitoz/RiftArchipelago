@@ -118,10 +118,10 @@ namespace RiftArchipelago.Patches
                 if (_isDailyChallenge) RiftAP._log.LogInfo("Daily Challenge Mode, Not sending checks");
                 if (_isTutorial) RiftAP._log.LogInfo("Tutorial Mode, Not sending checks");
                 if (_isPracticeMode) RiftAP._log.LogInfo("Practice Mode, Not sending checks");
-                if (_wereCheatsUsed) RiftAP._log.LogInfo("Cheats were used, Not sending checks");
+                if (_wereCheatsUsed) RiftAP._log.LogInfo("Cheats were used.");
 
                 // Break out if any illegal modes were detected
-                if (_isTutorial || _isPracticeMode || _isDailyChallenge || _wereCheatsUsed) {
+                if (_isTutorial || _isPracticeMode || _isDailyChallenge ) {
                     RiftAP._log.LogInfo("Tutorial, Practice, Cheats or Challenge mode detected: skipping AP Send");
                     RiftAP._log.LogInfo("-----");
                     return;
