@@ -32,10 +32,38 @@ namespace RiftArchipelago {
             if(slotData.TryGetValue("bossMode", out var boss_mode)) {
                 bbMode = ParseInt(boss_mode);
             }
+            if (slotData.TryGetValue("gradeNeeded", out var grade_needed)) {
+                gradeNeeded = MapGradeValue(grade_needed);
+            }
         }
 
         private int ParseInt(object i) {
             return int.TryParse(i.ToString(), out var result) ? result : -1;
+        }
+
+        private string MapGradeValue(object g) {
+            if (g == null) return null;
+            var s = g.ToString().Trim().ToUpper();
+
+            // If it gets sent as an enum value
+            if (int.TryParse(s, out var n)) {
+                return n switch {
+                    0 => "Any",
+                    1 => "D",
+                    2 => "C",
+                    3 => "B",
+                    4 => "A",
+                    5 => "S",
+                    _ => null,
+                };
+            }
+
+            // If it is sent as a string
+            var up = s.ToUpperInvariant();
+            if (up == "S_plus") return "SS";
+            if (up == "ANY" || up == "NONE") return "Any";
+
+            return up;
         }
     }
 }

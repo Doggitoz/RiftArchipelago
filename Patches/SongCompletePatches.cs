@@ -62,6 +62,8 @@ namespace RiftArchipelago.Patches
         // Runs at the end of the method that handles successfully beating a stage
         [HarmonyPostfix]
         public static void PostFix(RRStageController __instance) {
+            // Invalid if not connected to Archipelago
+            if (!ArchipelagoClient.isAuthenticated) return;
             try{
                 if (__instance == null) {
                     RiftAP._log.LogError("RRStageEnd PostFix: __instance == null");
@@ -83,12 +85,6 @@ namespace RiftArchipelago.Patches
                     return;
                 }
 
-                // I don't know what this even does but I think it was already here so I will leave it
-                if (_stageInputRecord.BaseStageScore == 0) {
-                    RiftAP._log.LogWarning("RRStageEnd PostFix: BaseStageScore == 0");
-                    return;
-                }
-
                 // Copy letter grade calculation from the original files
                 float percentage = (float)_stageInputRecord.TotalScore / _stageInputRecord.BaseStageScore * 100f;
                 string letter = _letterGradeDefinitions.GetLetterGradeForPercentage(percentage);
@@ -102,54 +98,60 @@ namespace RiftArchipelago.Patches
                     }
                 }
 
-                // Get important properties
                 string levelId = _stageScenePayload.GetLevelId();
                 string stageDisplayName = _stageContextInfo.StageDisplayName;
                 bool wasFullCombo = _stageInputRecord.TotalMisses == 0;
-
-                // Print out for debugging purposes
-                RiftAP._log.LogInfo("-----");
-                RiftAP._log.LogInfo("Song Complete!");
-                RiftAP._log.LogInfo($"Stage Display Name: {stageDisplayName}");
-                RiftAP._log.LogInfo($"Level ID: {levelId}");
-                RiftAP._log.LogInfo($"Difficulty: {_stageScenePayload.GetLevelDifficulty()}");
-                RiftAP._log.LogInfo($"Final Letter Grade: {letter}");
-                if (wasFullCombo) RiftAP._log.LogInfo("Full Combo Achieved!");
-                if (_isDailyChallenge) RiftAP._log.LogInfo("Daily Challenge Mode, Not sending checks");
-                if (_isTutorial) RiftAP._log.LogInfo("Tutorial Mode, Not sending checks");
-                if (_isPracticeMode) RiftAP._log.LogInfo("Practice Mode, Not sending checks");
-                if (_wereCheatsUsed) RiftAP._log.LogInfo("Cheats were used.");
-
-                // Break out if any illegal modes were detected
-                if (_isTutorial || _isPracticeMode || _isDailyChallenge ) {
-                    RiftAP._log.LogInfo("Tutorial, Practice, Cheats or Challenge mode detected: skipping AP Send");
-                    RiftAP._log.LogInfo("-----");
-                    return;
-                }
-
-                if (!ArchipelagoClient.isAuthenticated) {
-                    RiftAP._log.LogInfo("Not connected to Archipelago: skipping AP Send");
-                    RiftAP._log.LogInfo("-----");
-                    return;
-                }
-
+            
                 try {
-                    AP_RRLocationSend(stageDisplayName, levelId, _stageScenePayload.GetLevelDifficulty(), letter, wasFullCombo, _isRemixMode, false);
+                    RiftAP._log.LogInfo("-----");
+                    if (VerifyCompletionRequirements(stageDisplayName, levelId, _stageScenePayload.GetLevelDifficulty(), letter, wasFullCombo, _isRemixMode, false ,_wereCheatsUsed)) {
+                        RiftAP._log.LogInfo("Archipelago location verification validated");
+                        AP_RRLocationSend(stageDisplayName, levelId, _stageScenePayload.GetLevelDifficulty(), _isRemixMode);
+                    }
+                    RiftAP._log.LogInfo("-----");
                 }
                 catch (System.Exception ex) {
                     RiftAP._log.LogError($"Error in APLocationSend: {ex}");
                 }
-                RiftAP._log.LogInfo("-----");
             }
             catch (System.Exception ex) {
                 RiftAP._log.LogError($"Error in RRStageEnd PostFix: {ex}");
             }
         }
 
-        public static void AP_RRLocationSend(string stageDisplayName, string levelId, Difficulty difficulty, 
-                                            string letterGrade, bool isFullCombo, bool isRemixMode, bool isCustom) {
+        public static bool VerifyCompletionRequirements(string stageDisplayName, string levelId, Difficulty difficulty, 
+                                            string letterGrade, bool isFullCombo, bool isRemixMode, bool isCustom, bool cheatsDetected) {
+            // Invalid since custom songs not implemented yet
+            if (isCustom) return false; 
 
-            if (isCustom) return; // Custom songs not implemented yet
+            // Valid if golden lute used
+            if (cheatsDetected) return true;
+
+            // Invalid if any illegal modes were detected
+            if (_isTutorial || _isPracticeMode || _isDailyChallenge) {
+                RiftAP._log.LogInfo("Tutorial, Practice, or Challenge mode detected: skipping AP Send");
+                return false;
+            }
+
+            // Print out for debugging purposes
+            RiftAP._log.LogInfo("Song Complete!");
+            RiftAP._log.LogInfo($"Stage Display Name: {stageDisplayName}");
+            RiftAP._log.LogInfo($"Level ID: {levelId}");
+            RiftAP._log.LogInfo($"Difficulty: {_stageScenePayload.GetLevelDifficulty()}");
+            RiftAP._log.LogInfo($"Final Letter Grade: {letterGrade}");
+            if (isFullCombo) RiftAP._log.LogInfo("Full Combo Achieved!");
+
+            // Grade threshold check
+            string gradeNeeded = ArchipelagoClient.slotData.gradeNeeded;
+            if (GradeToInt(letterGrade) < GradeToInt(gradeNeeded)) {
+                RiftAP._log.LogInfo($"Grade {letterGrade} does not meet the requirement of {gradeNeeded}");
+                return false;
+            }
+
+            return true;
+        }
+
+        public static void AP_RRLocationSend(string stageDisplayName, string levelId, Difficulty difficulty, bool isRemixMode) {
 
             long locId = -1;
 
@@ -174,6 +176,7 @@ namespace RiftArchipelago.Patches
                 ArchipelagoClient.session.Locations.CompleteLocationChecksAsync([locId, locId + 1]);
             }
         }
+
         public static void GetPrivateFields(RRStageController __instance) {
             // BeatmapPlayer: try property first, then field
             object beatmapPlayer = null;
@@ -257,6 +260,18 @@ namespace RiftArchipelago.Patches
 
             try { _isDailyChallenge = _stageScenePayload.IsDailyChallenge; }
             catch { _isDailyChallenge = false; }
+        }
+    
+        public static int GradeToInt(string grade) {
+            return grade switch {
+                "D" => 1,
+                "C" => 2,
+                "B" => 3,
+                "A" => 4,
+                "S" => 5,
+                "SS" => 6,
+                _ => 0, // If for some reason this is something else, guarantee it clears the check
+            };
         }
     }
 
