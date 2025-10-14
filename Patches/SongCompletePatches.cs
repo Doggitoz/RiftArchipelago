@@ -37,26 +37,14 @@ namespace RiftArchipelago.Patches
         private static StageFlowUiController.StageContextInfo _stageContextInfo;
 
         private static readonly AccessTools.FieldRef<RRStageController, bool> _isMicroRiftRef =
-            AccessTools.FieldRefAccess<RRStageController, bool>("_isMicroRift");
-        private static bool _isMicroRift = false;
-
-        private static readonly AccessTools.FieldRef<RRStageController, bool> _isTutorialRef =
-            AccessTools.FieldRefAccess<RRStageController, bool>("_isTutorial");
-        private static bool _isTutorial = false;
-
-        private static readonly AccessTools.FieldRef<RRStageController, bool> _isPracticeModeRef =
-            AccessTools.FieldRefAccess<RRStageController, bool>("_isPracticeMode");
-        private static bool _isPracticeMode = false;
-
+            AccessTools.FieldRefAccess<RRStageController, bool>("_isMicroRift");        
         private static readonly AccessTools.FieldRef<RRStageController, bool> _wereCheatsUsedRef =
             AccessTools.FieldRefAccess<RRStageController, bool>("_wereCheatsUsed");
+        private static bool _isMicroRift = false;
+        private static bool _isTutorial = false;
+        private static bool _isPracticeMode = false;
         private static bool _wereCheatsUsed = false;
-
-        private static readonly AccessTools.FieldRef<RRStageController, bool> _isCalibrationTestRef =
-            AccessTools.FieldRefAccess<RRStageController, bool>("_isCalibrationTest");
-
         private static bool _isRemixMode = false;
-
         private static bool _isDailyChallenge = false;
 
         // Runs at the end of the method that handles successfully beating a stage
