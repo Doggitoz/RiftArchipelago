@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using BepInEx.Logging;
 
 namespace RiftArchipelago {
 
@@ -8,7 +7,7 @@ namespace RiftArchipelago {
         public int diamondGoal {get; private set;}
         public string goalSong {get; private set;}
         public bool deathLink {get; private set;}
-        public string gradeNeeded {get; private set;}
+        public Grade gradeNeeded {get; private set;}
         public bool remix {get; private set;}
         public int mgMode {get; private set;}
         public int bbMode {get; private set;}
@@ -33,7 +32,7 @@ namespace RiftArchipelago {
                 bbMode = ParseInt(boss_mode);
             }
             if (slotData.TryGetValue("gradeNeeded", out var grade_needed)) {
-                gradeNeeded = MapGradeValue(grade_needed);
+                gradeNeeded = MapObjectToGrade(grade_needed);
             }
         }
 
@@ -41,29 +40,41 @@ namespace RiftArchipelago {
             return int.TryParse(i.ToString(), out var result) ? result : -1;
         }
 
-        private string MapGradeValue(object g) {
-            if (g == null) return null;
+        public static Grade MapObjectToGrade(object g) {
+            if (g == null) return Grade.Any;
             var s = g.ToString().Trim().ToUpper();
 
             // If it gets sent as an enum value
             if (int.TryParse(s, out var n)) {
                 return n switch {
-                    0 => "Any",
-                    1 => "D",
-                    2 => "C",
-                    3 => "B",
-                    4 => "A",
-                    5 => "S",
-                    _ => null,
+                    0 => Grade.Any,
+                    1 => Grade.C,
+                    2 => Grade.B,
+                    3 => Grade.A,
+                    4 => Grade.S,
+                    5 => Grade.SS,
+                    _ => Grade.Any,
                 };
             }
 
             // If it is sent as a string
             var up = s.ToUpperInvariant();
-            if (up == "S_plus") return "SS";
-            if (up == "ANY" || up == "NONE") return "Any";
+            if (up == "S_PLUS") return Grade.SS;
+            else if (up == "SS") return Grade.SS;
+            else if (up == "S") return Grade.S;
+            else if (up == "A") return Grade.A;
+            else if (up == "B") return Grade.B;
+            else if (up == "C") return Grade.C;
+            else return Grade.Any;
+        }
 
-            return up;
+        public enum Grade {
+            Any = 0,
+            C = 1,
+            B = 2,
+            A = 3,
+            S = 4,
+            SS = 5
         }
     }
 }
