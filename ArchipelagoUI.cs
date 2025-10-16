@@ -1,25 +1,46 @@
+using Shared.RhythmEngine;
 using UnityEngine;
 
 namespace RiftArchipelago{
     public class ArchipelagoUI : MonoBehaviour {
         // Minimize state persisted between sessions
         private const string MinimizedPrefKey = "RiftArchipelago_UI_Minimized";
+        private const string HostPrefKey = "RiftArchipelago_UI_Host";
+        private const string SlotPrefKey = "RiftArchipelago_UI_Slot";
+        private string hostInputCache = "";
+        private string slotInputCache = "";
+        private string passwordInputCache = "";
+        private bool showPassword = false;
+        private bool failedLastAuthenticationAttempt = false;
         private static bool isMinimized;
 
+        // Panel layout constants
         private const int PanelX = 8;
         private const int PanelY = 8;
         private const int PanelWidth = 320;
         private const int PanelPadding = 8;
 
-        // New layout constants
+        // Content layout constants
         private const int LeftPadding = 12;
         private const int RightPadding = 12;
         private const int LabelWidth = 120;
         private const int FieldGap = 8;
-        private const int LineHeight = 20;
+        private const int LineHeight = 22;
+
+        private static GUIStyle toggleLabelGapStyle;
+
+        // Control names for focus detection
+        private const string CtrlHost = "AP_Ctrl_Host";
+        private const string CtrlSlot = "AP_Ctrl_Slot";
+        private const string CtrlPass = "AP_Ctrl_Pass";
+
+        // Global flag: true if any AP text field is focused
+        public static bool AnyTextFieldFocused;
 
         private void Awake() {
             isMinimized = PlayerPrefs.GetInt(MinimizedPrefKey, 0) == 1;
+            hostInputCache = PlayerPrefs.GetString(HostPrefKey, "");
+            slotInputCache = PlayerPrefs.GetString(SlotPrefKey, "");
         }
 
         private static void SetMinimized(bool value) {
@@ -29,6 +50,9 @@ namespace RiftArchipelago{
         }
 
         private void OnGUI() {
+            // Reset each frame
+            AnyTextFieldFocused = false;
+
             if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.LeftAlt) {
                 Cursor.visible = !Cursor.visible;
             }
@@ -72,48 +96,87 @@ namespace RiftArchipelago{
             // Status
             if (ArchipelagoClient.session != null) {
                 if (ArchipelagoClient.isAuthenticated) {
-                    GUI.Label(new Rect(LeftPadding, 16, contentWidth, LineHeight), "Status: Connected");
+                    GUI.Label(new Rect(LeftPadding, 20, contentWidth, LineHeight), "Status: Connected");
                 }
-                else {
-                    GUI.Label(new Rect(LeftPadding, 16, contentWidth, LineHeight), "Status: Authentication failed");
+                else if (failedLastAuthenticationAttempt) {
+                    GUI.Label(new Rect(LeftPadding, 20, contentWidth, LineHeight), "Status: Authentication failed");
+                } else {
+                    GUI.Label(new Rect(LeftPadding, 20, contentWidth, LineHeight), "Status: Not Connected");
                 }
             }
             else {
-                GUI.Label(new Rect(LeftPadding, 16, contentWidth, LineHeight), "Status: Not Connected");
+                GUI.Label(new Rect(LeftPadding, 20, contentWidth, LineHeight), "Status: Not Connected");
             }
 
             if ((ArchipelagoClient.session == null || !ArchipelagoClient.isAuthenticated) && ArchipelagoClient.state == APState.Menu ) {
                 // Labels
-                GUI.Label(new Rect(labelX, 36, LabelWidth, LineHeight), "Host:");
-                GUI.Label(new Rect(labelX, 56, LabelWidth, LineHeight), "Slot Name:");
-                GUI.Label(new Rect(labelX, 76, LabelWidth, LineHeight), "Password:");
+                GUI.Label(new Rect(labelX, 40, LabelWidth, LineHeight), "Host:");
+                GUI.Label(new Rect(labelX, 60, LabelWidth, LineHeight), "Slot Name:");
+                GUI.Label(new Rect(labelX, 80, LabelWidth, LineHeight), "Password:");
 
                 bool submit = Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return;
                 ArchipelagoInfo info = ArchipelagoClient.apInfo;
 
-                // Inputs sized to fit within the panel
-                info.address = GUI.TextField(new Rect(fieldX, 36, fieldWidth, LineHeight), info.address);
-                info.slot = GUI.TextField(new Rect(fieldX, 56, fieldWidth, LineHeight), info.slot);
-                info.password = GUI.TextField(new Rect(fieldX, 76, fieldWidth, LineHeight), info.password);
+                // Name each field, then draw it
+                GUI.SetNextControlName(CtrlHost);
+                hostInputCache = GUI.TextField(new Rect(fieldX, 40, fieldWidth, LineHeight), hostInputCache);
+
+                GUI.SetNextControlName(CtrlSlot);
+                slotInputCache = GUI.TextField(new Rect(fieldX, 60, fieldWidth, LineHeight), slotInputCache);
+
+                GUI.SetNextControlName(CtrlPass);
+                passwordInputCache = GUI.PasswordField(new Rect(fieldX, 80, fieldWidth, LineHeight), passwordInputCache, '*');
+
+                // Push current input values into info
+                info.address = hostInputCache;
+                info.slot = slotInputCache;
+                info.password = passwordInputCache;
+
+                // Update global focus flag
+                string focused = GUI.GetNameOfFocusedControl();
+                AnyTextFieldFocused = focused == CtrlHost || focused == CtrlSlot || focused == CtrlPass;
 
                 if (submit && Event.current.type == EventType.KeyDown) {
                     // The text fields have not consumed the event, which means they were not focused.
                     submit = false;
                 }
 
-                if ((GUI.Button(new Rect(LeftPadding, 96, 100, LineHeight), "Connect") || submit) && info.Valid) {
-                    ArchipelagoClient.Connect();
+                if ((GUI.Button(new Rect(LeftPadding, 110, 100, LineHeight), "Connect") || submit) && info.Valid) {
+                    bool success = ArchipelagoClient.Connect();
+                    if (!success) failedLastAuthenticationAttempt = true;
+                    PlayerPrefs.SetString(HostPrefKey, info.address);
+                    PlayerPrefs.SetString(SlotPrefKey, info.slot);
+                    hostInputCache = info.address;
+                    slotInputCache = info.slot;
+                    PlayerPrefs.Save();
                     if(ArchipelagoClient.isAuthenticated) {
                         ItemHandler.Setup();
                     }
                 }
             }
             else if(ArchipelagoClient.state == APState.Menu && ArchipelagoClient.session != null) {
-                GUI.Label(new Rect(LeftPadding, 36, contentWidth, LineHeight), "Goal Song: " + ArchipelagoClient.slotData.goalSong);
-                // GUI.Toggle(new Rect(16, 56, 100, 20), ArchipelagoClient.slotData.deathLink, "Death Link Toggle");
 
-                if(GUI.Button(new Rect(LeftPadding, 76, 100, LineHeight), "Disconnect")) {
+                if (toggleLabelGapStyle == null) {
+                    toggleLabelGapStyle = new GUIStyle(GUI.skin.toggle);
+                    toggleLabelGapStyle.padding = new RectOffset(
+                        GUI.skin.toggle.padding.left + 8, // extra gap
+                        GUI.skin.toggle.padding.right,
+                        GUI.skin.toggle.padding.top,
+                        GUI.skin.toggle.padding.bottom
+                    );
+                }
+
+                GUI.Label(new Rect(LeftPadding, 40, contentWidth, LineHeight), "Goal Song: " + ArchipelagoClient.slotData.goalSong);
+                
+                bool deathLinkCache = ArchipelagoClient.slotData.deathLink;
+                bool newDeathLink = GUI.Toggle(new Rect(LeftPadding, 60, contentWidth, LineHeight), deathLinkCache, "Death Link Toggle", toggleLabelGapStyle);
+                if (newDeathLink != deathLinkCache) {
+                    ArchipelagoClient.slotData.SetDeathLink(newDeathLink);
+                }
+
+                if(GUI.Button(new Rect(LeftPadding, 80, 100, LineHeight), "Disconnect")) {
                     ArchipelagoClient.Disconnect();
+                    failedLastAuthenticationAttempt = false;
                 }
             }
 

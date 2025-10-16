@@ -37,5 +37,9 @@ namespace RiftArchipelago {
         private int ParseInt(object i) {
             return int.TryParse(i.ToString(), out var result) ? result : -1;
         }
+
+        public void SetDeathLink(bool value) {
+            deathLink = value;
+        }
     }
 }
