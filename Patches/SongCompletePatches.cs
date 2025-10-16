@@ -96,17 +96,18 @@ namespace RiftArchipelago.Patches
 
                 string levelId = _stageScenePayload.GetLevelId();
                 string stageDisplayName = _stageContextInfo.StageDisplayName;
-                bool wasFullCombo = _stageInputRecord.TotalMisses == 0;
+                bool wasFullCombo = _stageInputRecord.TotalMisses == 0 && _stageInputRecord.TotalErrants == 0;
 
                 try
                 {
-                    RiftAP._log.LogInfo("-----");
                     if (VerifyCompletionRequirements(stageDisplayName, levelId, _stageScenePayload.GetLevelDifficulty(), SlotData.MapObjectToGrade(letter), wasFullCombo, _isRemixMode, false, _wereCheatsUsed))
                     {
                         RiftAP._log.LogInfo("Archipelago location verification validated");
                         AP_RRLocationSend(stageDisplayName, levelId, _stageScenePayload.GetLevelDifficulty(), _isRemixMode);
                     }
-                    RiftAP._log.LogInfo("-----");
+                    else {
+                        RiftAP._log.LogInfo("Archipelago location verification failed. Not sending check.");
+                    }
                 }
                 catch (System.Exception ex)
                 {
@@ -131,21 +132,22 @@ namespace RiftArchipelago.Patches
             // Invalid if any illegal modes were detected
             if (_isTutorial || _isPracticeMode || _isDailyChallenge)
             {
-                RiftAP._log.LogInfo("Tutorial, Practice, or Challenge mode detected: skipping AP Send");
+                RiftAP._log.LogInfo("Tutorial, Practice, or Challenge mode detected.");
                 return false;
             }
 
             // Print out for debugging purposes
-            RiftAP._log.LogInfo("Song Complete!");
-            RiftAP._log.LogInfo($"Stage Display Name: {stageDisplayName}");
-            RiftAP._log.LogInfo($"Level ID: {levelId}");
-            RiftAP._log.LogInfo($"Difficulty: {_stageScenePayload.GetLevelDifficulty()}");
-            RiftAP._log.LogInfo($"Final Letter Grade: {letterGrade}");
-            if (isFullCombo) RiftAP._log.LogInfo("Full Combo Achieved!");
+            RiftAP._log.LogInfo($"Song Completed! Stage: {stageDisplayName} | Level ID: {levelId} | Difficulty: {_stageScenePayload.GetLevelDifficulty()}");
+
+            // Full combo check
+            if (ArchipelagoClient.slotData.fullComboNeeded && !isFullCombo)
+            {
+                RiftAP._log.LogInfo("Full Combo required but not achieved");
+                return false;
+            }
 
             // Grade threshold check
             SlotData.Grade gradeNeeded = ArchipelagoClient.slotData.gradeNeeded;
-            RiftAP._log.LogInfo($"Grade Needed: {gradeNeeded}");
             if (letterGrade < gradeNeeded)
             {
                 RiftAP._log.LogInfo($"Grade {letterGrade} does not meet the requirement of {gradeNeeded}");

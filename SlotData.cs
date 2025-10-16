@@ -11,6 +11,7 @@ namespace RiftArchipelago {
         public bool remix {get; private set;}
         public int mgMode {get; private set;}
         public int bbMode {get; private set;}
+        public bool fullComboNeeded {get; private set;}
 
         public SlotData(Dictionary<string, object> slotData) {
             if(slotData.TryGetValue("diamondWinCount", out var diamond_goal)) {
@@ -33,6 +34,9 @@ namespace RiftArchipelago {
             }
             if (slotData.TryGetValue("gradeNeeded", out var grade_needed)) {
                 gradeNeeded = MapObjectToGrade(grade_needed);
+            }
+            if (slotData.TryGetValue("fullComboNeeded", out var fc_needed)) {
+                fullComboNeeded = Convert.ToBoolean(fc_needed);
             }
         }
 
