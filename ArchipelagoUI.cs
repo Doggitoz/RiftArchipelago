@@ -10,7 +10,6 @@ namespace RiftArchipelago{
         private string hostInputCache = "";
         private string slotInputCache = "";
         private string passwordInputCache = "";
-        private bool showPassword = false;
         private bool failedLastAuthenticationAttempt = false;
         private static bool isMinimized;
 
