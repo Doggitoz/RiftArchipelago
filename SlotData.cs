@@ -45,6 +45,10 @@ namespace RiftArchipelago {
             return int.TryParse(i.ToString(), out var result) ? result : -1;
         }
 
+        public void SetDeathLink(bool value) {
+            deathLink = value;
+        }
+          
         public static Grade MapObjectToGrade(object g) {
             if (g == null) return Grade.Any;
             var s = g.ToString().Trim().ToUpper();
