@@ -93,7 +93,20 @@ namespace RiftArchipelago{
             RiftAP._log.LogInfo($"AddDiamond: Adding Diamond | New Total: {diamondCount}");
 
             if(diamondCount >= ArchipelagoClient.slotData.diamondGoal) {
-                UnlockSong(ArchipelagoClient.slotData.goalSong);
+                string goalSong = ArchipelagoClient.slotData.goalSong;
+                string goalType = ArchipelagoClient.slotData.goalType;
+
+                if(goalType == "Minigame" || goalType == "Boss") {
+                    UnlockExtra(goalSong);
+                }
+
+                else if(goalType == "Remix") {
+                    UnlockExtra(goalSong);
+                }
+
+                else {
+                    UnlockSong(goalSong);
+                }
             }
         }
 
