@@ -47,6 +47,7 @@ namespace RiftArchipelago {
 
         public void SetDeathLink(bool value) {
             deathLink = value;
+        }
           
         public static Grade MapObjectToGrade(object g) {
             if (g == null) return Grade.Any;
