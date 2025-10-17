@@ -6,6 +6,7 @@ namespace RiftArchipelago {
     public class SlotData {
         public int diamondGoal {get; private set;}
         public string goalSong {get; private set;}
+        public string goalType {get; private set;}
         public bool deathLink {get; private set;}
         public Grade gradeNeeded {get; private set;}
         public bool remix {get; private set;}
@@ -20,8 +21,8 @@ namespace RiftArchipelago {
             if(slotData.TryGetValue("victoryLocation", out var victory)) {
                 goalSong = (string) victory;
             }
-            if(slotData.TryGetValue("deathLink", out var death_link)) {
-                deathLink = Convert.ToBoolean(death_link);
+            if(slotData.TryGetValue("victoryType", out var victory_type)) {
+                goalType = (string) victory_type;
             }
             if(slotData.TryGetValue("remixes", out var remixes)) {
                 remix = Convert.ToBoolean(remixes);
