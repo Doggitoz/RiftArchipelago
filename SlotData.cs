@@ -7,7 +7,6 @@ namespace RiftArchipelago {
         public int diamondGoal {get; private set;}
         public string goalSong {get; private set;}
         public string goalType {get; private set;}
-        public bool deathLink {get; private set;}
         public Grade gradeNeeded {get; private set;}
         public bool remix {get; private set;}
         public int mgMode {get; private set;}
@@ -43,10 +42,6 @@ namespace RiftArchipelago {
 
         private int ParseInt(object i) {
             return int.TryParse(i.ToString(), out var result) ? result : -1;
-        }
-
-        public void SetDeathLink(bool value) {
-            deathLink = value;
         }
           
         public static Grade MapObjectToGrade(object g) {

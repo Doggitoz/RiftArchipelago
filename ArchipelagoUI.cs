@@ -73,7 +73,7 @@ namespace RiftArchipelago{
 
             int panelHeight = 60; // base for status only
             if (showLogin) panelHeight = 140;
-            else if (showConnectedMenu) panelHeight = 110;
+            else if (showConnectedMenu) panelHeight = 120;
 
             // Precompute column positions to avoid overflow
             int labelX = LeftPadding;
@@ -167,13 +167,11 @@ namespace RiftArchipelago{
 
                 GUI.Label(new Rect(LeftPadding, 40, contentWidth, LineHeight), "Goal Song: " + ArchipelagoClient.slotData.goalSong);
                 
-                bool deathLinkCache = ArchipelagoClient.slotData.deathLink;
-                bool newDeathLink = GUI.Toggle(new Rect(LeftPadding, 60, contentWidth, LineHeight), deathLinkCache, "Death Link Toggle", toggleLabelGapStyle);
-                if (newDeathLink != deathLinkCache) {
-                    ArchipelagoClient.slotData.SetDeathLink(newDeathLink);
-                }
+                // if(GUI.Button(new Rect(LeftPadding, 60, 150, LineHeight), "Death Link: " + ArchipelagoClient.deathLink)) {
+                //     ArchipelagoClient.SetDeathLink();
+                // }
 
-                if(GUI.Button(new Rect(LeftPadding, 80, 100, LineHeight), "Disconnect")) {
+                if(GUI.Button(new Rect(LeftPadding, 85, 100, LineHeight), "Disconnect")) {
                     ArchipelagoClient.Disconnect();
                     failedLastAuthenticationAttempt = false;
                 }
