@@ -12,11 +12,12 @@ namespace RiftArchipelago.Patches{
         }
     } 
 
-    [HarmonyPatch(typeof(RRStageController), "Start")]
-    public static class RecieveDeathLink {
-        [HarmonyPostfix]
-        public static void PostFix(RRStageController __instance) {
-            // ArchipelagoClient.stageController = __instance;
-        }
-    } 
+    // This was throwing an error, so commenting out for now.
+    // [HarmonyPatch(typeof(RRStageController), "Start")]
+    // public static class RecieveDeathLink {
+    //     [HarmonyPostfix]
+    //     public static void PostFix(RRStageController __instance) {
+    //         // ArchipelagoClient.stageController = __instance;
+    //     }
+    // } 
 }

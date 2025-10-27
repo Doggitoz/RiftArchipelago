@@ -117,7 +117,7 @@ namespace RiftArchipelago{
             
                     foreach(DifficultyInformation diff in value.DifficultyInformation) {
                         diff.UnlockCriteria.Type = UnlockCriteriaType.None;
-                        if(!ArchipelagoClient.slotData.remix) {
+                        if(!ArchipelagoClient.slotData.isRemixEnabled) {
                             diff.RemixUnlockCriteria.Type = UnlockCriteriaType.None;
                         }
                     }

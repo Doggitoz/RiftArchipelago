@@ -8,7 +8,7 @@ namespace RiftArchipelago {
         public string goalSong {get; private set;}
         public string goalType {get; private set;}
         public Grade gradeNeeded {get; private set;}
-        public bool remix {get; private set;}
+        public bool isRemixEnabled {get; private set;}
         public int mgMode {get; private set;}
         public int bbMode {get; private set;}
         public bool fullComboNeeded {get; private set;}
@@ -24,7 +24,7 @@ namespace RiftArchipelago {
                 goalType = (string) victory_type;
             }
             if(slotData.TryGetValue("remixes", out var remixes)) {
-                remix = Convert.ToBoolean(remixes);
+                isRemixEnabled = Convert.ToBoolean(remixes);
             }
             if(slotData.TryGetValue("minigameMode", out var mg_mode)) {
                 mgMode = ParseInt(mg_mode);

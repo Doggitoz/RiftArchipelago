@@ -145,7 +145,7 @@ namespace RiftArchipelago.Patches
         public static void AP_RRLocationSend(string stageDisplayName, string levelId, Difficulty difficulty, bool isRemixMode) {
             long locId = -1;
 
-            if (!ArchipelagoClient.slotData.remix || !isRemixMode){
+            if (!ArchipelagoClient.slotData.isRemixEnabled || !isRemixMode){
                 if (stageDisplayName == ArchipelagoClient.slotData.goalSong)
                 {
                     ArchipelagoClient.GoalGame();
